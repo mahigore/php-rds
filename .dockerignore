@@ -1,0 +1,14 @@
+.git
+.github/
+.gitignore
+README.md
+LICENSE
+*.pem
+*.key
+*.env
+node_modules/
+vendor/
+*.log
+*.tmp
+Dockerfile
+docker-compose.yml
