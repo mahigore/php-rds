@@ -30,16 +30,16 @@ pipeline {
         }
         stage("Docker Image Tag") {
             steps{
-                sh """
+                sh '''
                 echo "-------- Tagging Docker Image --------"
                 docker tag php-app:"${App_Version}" "${ECR_REGISTRY}"/"${ECR_REPOSITORY}":"${App_Version}"
                 echo "-------- Tagging Docker Image Completed."
-                """
+                '''
             }
         }
         stage("Loggingin & Pushing Docker image to ECR") {
             steps {
-                sh """
+                sh '''
                 echo "-------- Logging To ECR  --------"
                 aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                 echo "-------- Login Successful --------"
@@ -47,16 +47,16 @@ pipeline {
                 echo "-------- Pushing Docker Image To ECR --------"
                 docker push "${ECR_REGISTRY}"/"${ECR_REPOSITORY}":"${App_Version}"
                 echo "-------- Docker Image Pushed Successfully --------"
-                """
+                '''
             }
         }
         stage("cleanup") {
             steps {
-                sh """
+                sh '''
                    echo "-------- Cleaning Up Jenkins Machine --------"
                    docker image prune -a -f
                    echo "-------- Clean Up Successful --------"
-                """
+                '''
             }
        }
        stage("Deployment Acceptance") {
@@ -66,8 +66,12 @@ pipeline {
        }
        stage("Triggering Deployment") {
            steps {
-                 
+               sh '''
+                   echo "-------- Cleaning Up Jenkins Machine --------"
+                   docker image prune -a -f
+                   echo "-------- Clean Up Successful --------"
+                '''
            }
-      }
+       }
     }
 }
