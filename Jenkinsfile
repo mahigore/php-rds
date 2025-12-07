@@ -12,15 +12,13 @@ pipeline {
             ECR_REPOSITORY = 'project/php-app'
 
             // EC2 Configuration
-            APP_EC2_HOST = '54.169.149.223'  // Application EC2 (2nd EC2)
+            EC2_HOST = '54.169.149.223'  // Application EC2 (2nd EC2)
             EC2_USER = 'ec2-user'
-            SSH_KEY_PATH = credentials('ssh-key')
 
             // Database Configuration (store only non-sensitive info here)
             DB_HOST = 'php-app-database.cby2mqygynq9.ap-southeast-1.rds.amazonaws.com'
             DB_NAME = 'php-app-database'
             DB_USER = 'admin'
-            DB_PASS =credentials('db-pass')
         }
     
     stages{
@@ -77,9 +75,13 @@ pipeline {
        }
        stage('Deploy to EC2') {
             steps {
-                script {
+                script{
                     echo 'Deploying to EC2 instance...'
-                    sh '''
+                    withCredentials([
+                        sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY'),
+                        string(credentialsId: 'db-pass', variable: 'DB_PASS')
+                    ]) {
+                        sh '''
                             # Deploy using SSH
                             ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
                             
@@ -122,6 +124,7 @@ pipeline {
                         '''
                     }
                 }
+            }
         }
     }
 }
