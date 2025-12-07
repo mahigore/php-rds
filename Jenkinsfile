@@ -10,6 +10,17 @@ pipeline {
             AWS_ACCOUNT_ID = '864981735502'
             ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
             ECR_REPOSITORY = 'project/php-app'
+
+            // EC2 Configuration
+            APP_EC2_HOST = '54.169.149.223'  // Application EC2 (2nd EC2)
+            EC2_USER = 'ec2-user'
+            SSH_KEY_PATH =credentails('ssh-key')
+
+            // Database Configuration (store only non-sensitive info here)
+            DB_HOST = 'php-app-database.cby2mqygynq9.ap-southeast-1.rds.amazonaws.com'
+            DB_NAME = 'php-app-database'
+            DB_USER = 'admin'
+            DB_PASS =credentials('db-pass')
         }
     
     stages{
@@ -64,14 +75,54 @@ pipeline {
                input 'Trigger Deployment'
            }
        }
-       stage("Triggering Deployment") {
-           steps {
-               sh '''
-                   echo "-------- Cleaning Up Jenkins Machine --------"
-                   docker image prune -a -f
-                   echo "-------- Clean Up Successful --------"
-                '''
-           }
-       }
-    }
+       stage('Deploy to EC2') {
+            steps {
+                script {
+                    echo 'Deploying to EC2 instance...'
+                    sh '''
+                            # Deploy using SSH
+                            ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
+                            
+                            # Set environment variables
+                            export AWS_REGION=${AWS_REGION}
+                            export ECR_REGISTRY=${ECR_REGISTRY}
+                            export ECR_REPOSITORY=${ECR_REPOSITORY}
+                            
+                            # Login to ECR
+                            echo "Logging into ECR on EC2..."
+                            aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                            
+                            # Stop existing container
+                            echo "Stopping existing container..."
+                            docker stop php-app 2>/dev/null || true
+                            docker rm php-app 2>/dev/null || true
+                            
+                            # Pull latest image
+                            echo "Pulling latest image..."
+                            docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+                            
+                            # Run new container
+                            echo "Starting new container..."
+                            docker run -d \
+                                -p 80:80 \
+                                -e DB_HOST=${DB_HOST} \
+                                -e DB_NAME=${DB_NAME} \
+                                -e DB_USER=${DB_USER} \
+                                -e DB_PASSWORD=${DB_PASSWORD} \
+                                --name php-app \
+                                --restart unless-stopped \
+                                ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+                            
+                            # Verify container is running
+                            echo "Verifying deployment..."
+                            sleep 10
+                            docker ps | grep php-app
+                            
+                       ENDSSH
+                        '''
+                    }
+                }
+        }
+   }
 }
+
