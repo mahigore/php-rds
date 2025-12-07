@@ -14,7 +14,7 @@ pipeline {
             // EC2 Configuration
             APP_EC2_HOST = '54.169.149.223'  // Application EC2 (2nd EC2)
             EC2_USER = 'ec2-user'
-            SSH_KEY_PATH =credentails('ssh-key')
+            SSH_KEY_PATH = credentials('ssh-key')
 
             // Database Configuration (store only non-sensitive info here)
             DB_HOST = 'php-app-database.cby2mqygynq9.ap-southeast-1.rds.amazonaws.com'
@@ -123,6 +123,6 @@ pipeline {
                     }
                 }
         }
-   }
+    }
 }
 
