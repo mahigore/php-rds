@@ -83,7 +83,7 @@ pipeline {
                     ]) {
                         sh '''
                             # Deploy using SSH
-                            ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
+                            ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
                             
                             # Set environment variables
                             export AWS_REGION=${AWS_REGION}
@@ -110,7 +110,7 @@ pipeline {
                                 -e DB_HOST=${DB_HOST} \
                                 -e DB_NAME=${DB_NAME} \
                                 -e DB_USER=${DB_USER} \
-                                -e DB_PASSWORD=${DB_PASSWORD} \
+                                -e DB_PASSWORD=${DB_PASS} \
                                 --name php-app \
                                 --restart unless-stopped \
                                 ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
