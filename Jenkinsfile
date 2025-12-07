@@ -50,5 +50,24 @@ pipeline {
                 """
             }
         }
+        stage("cleanup") {
+            steps {
+                sh """
+                   echo "-------- Cleaning Up Jenkins Machine --------"
+                   docker image prune -a -f
+                   echo "-------- Clean Up Successful --------"
+                """
+            }
+       }
+       stage("Deployment Acceptance") {
+           steps {
+               input 'Trigger Deployment'
+           }
+       }
+       stage("Triggering Deployment") {
+           steps {
+                 
+           }
+      }
     }
 }
