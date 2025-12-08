@@ -108,7 +108,7 @@ pipeline {
                                 -e DB_HOST=php-app-database.cby2mqygynq9.ap-southeast-1.rds.amazonaws.com \
                                 -e DB_NAME=php-app-database \
                                 -e DB_USER=admin \
-                                -e DB_PASS=${DB_PASS} \
+                                -e DB_PASS=Mahi7888 \
                                 --name php-app \
                                 --restart unless-stopped \
                                 ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
