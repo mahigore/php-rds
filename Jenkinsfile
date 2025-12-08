@@ -86,9 +86,9 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
                             
                             # Set environment variables
-                            export AWS_REGION=${AWS_REGION}
-                            export ECR_REGISTRY=${ECR_REGISTRY}
-                            export ECR_REPOSITORY=${ECR_REPOSITORY}
+                            export AWS_REGION=ap-southeast-1
+                            export ECR_REGISTRY=864981735502.dkr.ecr.ap-southeast-1.amazonaws.com
+                            export ECR_REPOSITORY=project/php-app
                             
                             # Login to ECR
                             echo "Logging into ECR on EC2..."
@@ -119,8 +119,7 @@ pipeline {
                             echo "Verifying deployment..."
                             sleep 10
                             docker ps | grep php-app
-                            
-                       ENDSSH
+ENDSSH
                         '''
                     }
                 }
