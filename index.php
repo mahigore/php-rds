@@ -4,7 +4,7 @@
   <title>Feedback Form</title>
 </head>
 <body>
-  <h2>Submit Feedback</h2>
+  <h2>Submit your Feedback</h2>
   <form method="POST" action="">
     Name: <input type="text" name="name"><br><br>
     Feedback: <textarea name="feedback"></textarea><br><br>
