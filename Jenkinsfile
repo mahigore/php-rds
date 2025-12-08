@@ -1,9 +1,6 @@
 pipeline {
     agent any
 
-    parameters {
-    string(name: "App_Version", description: "provide application version")
-    }
     environment {
             // AWS Configuration
             AWS_REGION = 'ap-southeast-1'  // Your region
@@ -32,7 +29,7 @@ pipeline {
             steps {
                 sh '''
                 echo "-------- Building Docker Image --------"
-                docker build -t php-app:"${App_Version}" .
+                docker build -t php-app:latest .
                 echo "-------- Image Successfully Built --------"
                 '''
             }
@@ -41,7 +38,7 @@ pipeline {
             steps{
                 sh '''
                 echo "-------- Tagging Docker Image --------"
-                docker tag php-app:"${App_Version}" "${ECR_REGISTRY}"/"${ECR_REPOSITORY}":"${App_Version}"
+                docker tag php-app:latest "${ECR_REGISTRY}"/"${ECR_REPOSITORY}":latest
                 echo "-------- Tagging Docker Image Completed."
                 '''
             }
@@ -54,7 +51,7 @@ pipeline {
                 echo "-------- Login Successful --------"
 
                 echo "-------- Pushing Docker Image To ECR --------"
-                docker push "${ECR_REGISTRY}"/"${ECR_REPOSITORY}":"${App_Version}"
+                docker push "${ECR_REGISTRY}"/"${ECR_REPOSITORY}":latest
                 echo "-------- Docker Image Pushed Successfully --------"
                 '''
             }
