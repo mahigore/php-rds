@@ -104,7 +104,7 @@ pipeline {
                             -e DB_HOST=${DB_HOST} \\
                             -e DB_NAME=${DB_NAME} \\
                             -e DB_USER=${DB_USER} \\
-                            -e DB_PASSWORD=${DB_PASS} \\
+                            -e DB_PASS=${DB_PASS} \\
                             --name php-app \\
                             --restart unless-stopped \\
                             ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
