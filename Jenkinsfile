@@ -113,7 +113,7 @@ pipeline {
                             echo "Verifying deployment..."
                             sleep 10
                             docker ps | grep php-app
-        ENDSSH
+ENDSSH
                         """
                     }
                 }
