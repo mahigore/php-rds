@@ -83,9 +83,13 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
                             
                             # Set environment variables
-                            export AWS_REGION=ap-southeast-1
-                            export ECR_REGISTRY=864981735502.dkr.ecr.ap-southeast-1.amazonaws.com
-                            export ECR_REPOSITORY=project/php-app
+                               export AWS_REGION=${AWS_REGION}
+                               export ECR_REGISTRY=${ECR_REGISTRY}
+                               export ECR_REPOSITORY=${ECR_REPOSITORY}
+                               export DB_HOST=${DB_HOST}
+                               export DB_NAME=${DB_NAME}
+                               export DB_USER=${DB_USER}
+                               export DB_PASS=${DB_PASS}
                             
                             # Login to ECR
                             echo "Logging into ECR on EC2..."
@@ -104,15 +108,15 @@ pipeline {
                             # Run new container
                             echo "Starting new container..."
                             docker run -d \
-                                -p 80:80 \
-                                -e DB_HOST=php-app-database.cby2mqygynq9.ap-southeast-1.rds.amazonaws.com \
-                                -e DB_NAME=php-app-database \
-                                -e DB_USER=admin \
-                                -e DB_PASS=Mahi7888 \
-                                --name php-app \
-                                --restart unless-stopped \
-                                ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
-                            
+                               -p 80:80 \
+                               -e DB_HOST=\${DB_HOST} \
+                               -e DB_NAME=\${DB_NAME} \
+                               -e DB_USER=\${DB_USER} \
+                               -e DB_PASSWORD=\${DB_PASSWORD} \
+                               --name php-app \
+                               --restart unless-stopped \
+                               \${ECR_REGISTRY}/\${ECR_REPOSITORY}:latest
+                                                         
                             # Verify container is running
                             echo "Verifying deployment..."
                             sleep 10
