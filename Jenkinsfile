@@ -95,6 +95,7 @@ pipeline {
                             echo "Stopping existing container..."
                             docker stop php-app 2>/dev/null || true
                             docker rm php-app 2>/dev/null || true
+                            docker rmi -f -a -q 2>/dev/null || true
                             
                             # Pull latest image
                             echo "Pulling latest image..."
