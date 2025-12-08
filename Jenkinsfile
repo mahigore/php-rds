@@ -104,9 +104,9 @@ pipeline {
                             echo "Starting new container..."
                             docker run -d \
                                 -p 80:80 \
-                                -e DB_HOST=${DB_HOST} \
-                                -e DB_NAME=${DB_NAME} \
-                                -e DB_USER=${DB_USER} \
+                                -e DB_HOST=php-app-database.cby2mqygynq9.ap-southeast-1.rds.amazonaws.com \
+                                -e DB_NAME=php-app-database \
+                                -e DB_USER=admin \
                                 -e DB_PASSWORD=${DB_PASS} \
                                 --name php-app \
                                 --restart unless-stopped \
