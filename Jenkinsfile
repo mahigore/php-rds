@@ -93,7 +93,7 @@ pipeline {
                             
                             # Login to ECR
                             echo "Logging into ECR on EC2..."
-                            aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                            aws ecr get-login-password --region \${AWS_REGION} | docker login --username AWS --password-stdin \${ECR_REGISTRY}
                             
                             # Stop existing container
                             echo "Stopping existing container..."
@@ -103,7 +103,7 @@ pipeline {
                             
                             # Pull latest image
                             echo "Pulling latest image..."
-                            docker pull ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+                            docker pull \${ECR_REGISTRY}/\${ECR_REPOSITORY}:latest
                             
                             # Run new container
                             echo "Starting new container..."
