@@ -12,7 +12,7 @@ pipeline {
             ECR_REPOSITORY = 'project/php-app'
 
             // EC2 Configuration
-            EC2_HOST = '54.169.149.223'  // Application EC2 (2nd EC2)
+            EC2_HOST = '54.255.144.223'  // Application EC2 (2nd EC2)
             EC2_USER = 'ec2-user'
 
             // Database Configuration (store only non-sensitive info here)
